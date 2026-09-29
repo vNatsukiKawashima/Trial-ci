@@ -1,20 +1,25 @@
-name: Subtract Number
+name: Calculate
 
 on:
   workflow_dispatch:
 
 jobs:
-  subtract:
+  calculate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Run Python
-        run: python calc.py
+      - name: Run calc.py
+        id: calc
+        run: |
+          RESULT=$(python calc.py)
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
+      - name: Run multiply.py
+        run: |
+          python multiply.py "${{ steps.calc.outputs.result }}"
